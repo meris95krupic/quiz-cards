@@ -36,6 +36,7 @@ import { CardProgress } from './modules/cards/card-progress.entity';
         entities: [User, CardList, Card, Game, GamePlayer, GameTurn, CardProgress],
         synchronize: config.get<string>('nodeEnv') !== 'production',
         logging: config.get<string>('nodeEnv') === 'development',
+        ssl: config.get<string>('database.ssl') === 'true' ? { rejectUnauthorized: false } : false,
       }),
     }),
     ThrottlerModule.forRoot([
