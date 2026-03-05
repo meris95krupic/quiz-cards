@@ -1,4 +1,4 @@
-import type { AuthTokens, LoginDto, RegisterDto } from '../types';
+import type { AuthTokens, LoginDto, RegisterDto, User } from '../types';
 import { apiClient } from './client';
 
 export const authApi = {
