@@ -7,6 +7,7 @@ export default () => ({
     user: process.env.DATABASE_USER ?? 'postgres',
     password: process.env.DATABASE_PASSWORD ?? 'postgres',
     name: process.env.DATABASE_NAME ?? 'quiz_cards',
+    ssl: process.env.DATABASE_SSL ?? 'false',
   },
   jwt: {
     secret: process.env.JWT_SECRET ?? 'dev-secret',
