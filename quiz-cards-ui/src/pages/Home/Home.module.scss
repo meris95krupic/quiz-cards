@@ -1,0 +1,252 @@
+@use '../../styles/tokens' as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: $color-surface;
+  @include safe-padding-top;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $space-4 $space-5;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-black;
+}
+
+.logoIcon {
+  font-size: $font-size-2xl;
+}
+
+.logoText {
+  @include gradient-text($gradient-primary);
+}
+
+.loginLink {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-text-muted;
+  cursor: pointer;
+  padding: $space-2 $space-4;
+  border-radius: $radius-full;
+  border: 1px solid $glass-border;
+  background: $glass-bg;
+  transition: all $transition-fast;
+
+  &:hover {
+    color: $color-text-primary;
+    background: $glass-bg-hover;
+  }
+}
+
+.userArea {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+}
+
+.userName {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-text-muted;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: $space-4 $space-5;
+  gap: $space-6;
+  max-width: 540px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.hero {
+  text-align: center;
+  padding: $space-4 0;
+  animation: fadeIn 0.4s ease;
+}
+
+.heroTitle {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-black;
+  @include gradient-text($gradient-primary);
+  line-height: 1.1;
+  margin-bottom: $space-2;
+}
+
+.heroSub {
+  font-size: $font-size-base;
+  color: $color-text-muted;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sectionTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.addBtn {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: #6C63FF;
+  cursor: pointer;
+  padding: $space-2 $space-4;
+  border-radius: $radius-full;
+  background: rgba(108, 99, 255, 0.12);
+  border: 1px solid rgba(108, 99, 255, 0.3);
+  transition: all $transition-fast;
+
+  &:hover {
+    background: rgba(108, 99, 255, 0.22);
+  }
+}
+
+.addForm {
+  @include glass;
+  border-radius: $radius-xl;
+  padding: $space-5;
+  display: flex;
+  flex-direction: column;
+  gap: $space-5;
+  animation: fadeIn 0.2s ease;
+}
+
+.avatarSection {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.avatarLabel {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.empty {
+  @include flex-center;
+  flex-direction: column;
+  gap: $space-3;
+  padding: $space-10;
+  color: $color-text-muted;
+  text-align: center;
+
+  span {
+    font-size: $font-size-4xl;
+    opacity: 0.5;
+  }
+
+  p {
+    font-size: $font-size-sm;
+  }
+}
+
+.playerList {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.playerItem {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  animation: slideInRight 0.2s ease;
+}
+
+.playerSelect {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $space-3 $space-4;
+  border-radius: $radius-lg;
+  background: $glass-bg;
+  border: 1px solid $glass-border;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover {
+    background: $glass-bg-hover;
+  }
+
+  &.selected {
+    border-color: rgba(108, 99, 255, 0.5);
+    background: rgba(108, 99, 255, 0.1);
+  }
+}
+
+.checkmark {
+  font-size: $font-size-lg;
+  color: #6C63FF;
+  font-weight: $font-weight-bold;
+}
+
+.deleteBtn {
+  padding: $space-2;
+  font-size: $font-size-xl;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: opacity $transition-fast;
+  border-radius: $radius-sm;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.startArea {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  @include safe-padding-bottom;
+  padding-top: $space-4;
+  margin-top: auto;
+}
+
+.hint {
+  text-align: center;
+  font-size: $font-size-sm;
+  color: $color-text-muted;
+  animation: pulse 2s ease infinite;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}

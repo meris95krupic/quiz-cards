@@ -1,0 +1,37 @@
+{
+  "title": "Englisch – Deutsch",
+  "description": "5 Vokabelkarten zum Testen des Vocabulary-Typs (strukturell qa)",
+  "bgColor": "#FF6584",
+  "cards": [
+    {
+      "type": "qa",
+      "front": "butterfly",
+      "back": "der Schmetterling",
+      "bgColor": "#FF6584"
+    },
+    {
+      "type": "qa",
+      "front": "umbrella",
+      "back": "der Regenschirm",
+      "bgColor": "#6C63FF"
+    },
+    {
+      "type": "qa",
+      "front": "strawberry",
+      "back": "die Erdbeere",
+      "bgColor": "#ee0979"
+    },
+    {
+      "type": "qa",
+      "front": "lighthouse",
+      "back": "der Leuchtturm",
+      "bgColor": "#FFD200"
+    },
+    {
+      "type": "qa",
+      "front": "thunderstorm",
+      "back": "das Gewitter",
+      "bgColor": "#9708CC"
+    }
+  ]
+}

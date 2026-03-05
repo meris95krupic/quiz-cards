@@ -1,0 +1,67 @@
+{
+  "title": "Arabisch – Smalltalk",
+  "description": "10 gängige arabische Phrasen für den Alltag mit bosnischer Übersetzung",
+  "bgColor": "#1a0a2e",
+  "cards": [
+    {
+      "type": "qa",
+      "front": "مرحبا",
+      "back": "Zdravo",
+      "bgColor": "#2d1b4e"
+    },
+    {
+      "type": "qa",
+      "front": "كيف حالك؟",
+      "back": "Kako si?",
+      "bgColor": "#2d1b4e"
+    },
+    {
+      "type": "qa",
+      "front": "بخير، شكراً",
+      "back": "Dobro sam, hvala.",
+      "bgColor": "#2d1b4e"
+    },
+    {
+      "type": "qa",
+      "front": "ما اسمك؟",
+      "back": "Kako se zoveš?",
+      "bgColor": "#2d1b4e"
+    },
+    {
+      "type": "qa",
+      "front": "يسعدني لقاؤك",
+      "back": "Drago mi je što te upoznajem.",
+      "bgColor": "#2d1b4e"
+    },
+    {
+      "type": "qa",
+      "front": "من أين أنت؟",
+      "back": "Odakle si?",
+      "bgColor": "#2d1b4e"
+    },
+    {
+      "type": "qa",
+      "front": "كم عمرك؟",
+      "back": "Koliko imaš godina?",
+      "bgColor": "#2d1b4e"
+    },
+    {
+      "type": "qa",
+      "front": "هل تتكلم العربية؟",
+      "back": "Da li govoriš arapski?",
+      "bgColor": "#2d1b4e"
+    },
+    {
+      "type": "qa",
+      "front": "شكراً جزيلاً",
+      "back": "Hvala lijepa.",
+      "bgColor": "#2d1b4e"
+    },
+    {
+      "type": "qa",
+      "front": "إلى اللقاء",
+      "back": "Doviđenja.",
+      "bgColor": "#2d1b4e"
+    }
+  ]
+}

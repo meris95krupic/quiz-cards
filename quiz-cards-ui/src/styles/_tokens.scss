@@ -1,0 +1,135 @@
+// ─── Color Palette ───────────────────────────────────────────────────────────
+
+// Gradients
+$gradient-primary:   linear-gradient(135deg, #6C63FF, #FF6584);
+$gradient-secondary: linear-gradient(135deg, #43CBFF, #9708CC);
+$gradient-accent:    linear-gradient(135deg, #F7971E, #FFD200);
+$gradient-success:   linear-gradient(135deg, #00D4AA, #00F0C8);
+$gradient-danger:    linear-gradient(135deg, #FF4757, #FF6B81);
+
+// Surface
+$color-surface:      #0F0F1A;
+$color-surface-2:    #14142A;
+$color-card-bg:      #1A1A2E;
+$color-overlay:      rgba(15, 15, 26, 0.85);
+
+// Text
+$color-text-primary: #FFFFFF;
+$color-text-muted:   rgba(255, 255, 255, 0.6);
+$color-text-faint:   rgba(255, 255, 255, 0.3);
+
+// Semantic
+$color-correct:      #00D4AA;
+$color-wrong:        #FF4757;
+$color-skip:         #FFA502;
+$color-info:         #43CBFF;
+
+// Glass
+$glass-bg:           rgba(255, 255, 255, 0.07);
+$glass-border:       rgba(255, 255, 255, 0.12);
+$glass-bg-hover:     rgba(255, 255, 255, 0.11);
+
+// ─── Typography ──────────────────────────────────────────────────────────────
+
+$font-family:        'Poppins', 'Inter', system-ui, sans-serif;
+$font-size-xs:       0.75rem;   // 12px
+$font-size-sm:       0.875rem;  // 14px
+$font-size-base:     1rem;      // 16px
+$font-size-lg:       1.125rem;  // 18px
+$font-size-xl:       1.25rem;   // 20px
+$font-size-2xl:      1.5rem;    // 24px
+$font-size-3xl:      1.875rem;  // 30px
+$font-size-4xl:      2.25rem;   // 36px
+$font-size-5xl:      3rem;      // 48px
+
+$font-weight-regular: 400;
+$font-weight-medium:  500;
+$font-weight-semibold: 600;
+$font-weight-bold:    700;
+$font-weight-black:   900;
+
+// ─── Spacing ─────────────────────────────────────────────────────────────────
+
+$space-1:  0.25rem;
+$space-2:  0.5rem;
+$space-3:  0.75rem;
+$space-4:  1rem;
+$space-5:  1.25rem;
+$space-6:  1.5rem;
+$space-8:  2rem;
+$space-10: 2.5rem;
+$space-12: 3rem;
+$space-16: 4rem;
+$space-20: 5rem;
+$space-24: 6rem;
+
+// ─── Border Radius ───────────────────────────────────────────────────────────
+
+$radius-sm:   8px;
+$radius-md:   12px;
+$radius-lg:   16px;
+$radius-xl:   24px;
+$radius-2xl:  32px;
+$radius-full: 9999px;
+
+// ─── Shadows ─────────────────────────────────────────────────────────────────
+
+$shadow-sm:   0 2px 8px rgba(0, 0, 0, 0.3);
+$shadow-md:   0 4px 16px rgba(0, 0, 0, 0.4);
+$shadow-lg:   0 8px 32px rgba(0, 0, 0, 0.5);
+$shadow-card: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+
+// ─── Transitions ─────────────────────────────────────────────────────────────
+
+$transition-fast:   0.15s ease;
+$transition-base:   0.25s ease;
+$transition-slow:   0.4s ease;
+$transition-flip:   0.5s ease;
+
+// ─── Z-Index ─────────────────────────────────────────────────────────────────
+
+$z-base:    1;
+$z-overlay: 100;
+$z-modal:   200;
+$z-toast:   300;
+
+// ─── Breakpoints ─────────────────────────────────────────────────────────────
+
+$bp-sm:  480px;
+$bp-md:  768px;
+$bp-lg:  1024px;
+$bp-xl:  1280px;
+
+// ─── Mixins ──────────────────────────────────────────────────────────────────
+
+@mixin glass {
+  background: $glass-bg;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid $glass-border;
+}
+
+@mixin gradient-text($gradient: $gradient-primary) {
+  background: $gradient;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin safe-padding-bottom {
+  padding-bottom: max($space-6, env(safe-area-inset-bottom));
+}
+
+@mixin safe-padding-top {
+  padding-top: max($space-4, env(safe-area-inset-top));
+}
+
+@mixin glow($color, $intensity: 0.4) {
+  box-shadow: 0 0 20px rgba($color, $intensity), 0 0 40px rgba($color, $intensity * 0.5);
+}

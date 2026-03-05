@@ -1,0 +1,34 @@
+# Environment variables (never commit secrets!)
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+build/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Claude Code local config (AI working directory)
+.claude/
+
+# TypeScript cache
+*.tsbuildinfo

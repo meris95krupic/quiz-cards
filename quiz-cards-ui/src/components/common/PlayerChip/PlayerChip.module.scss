@@ -1,0 +1,76 @@
+@use '../../../styles/tokens' as *;
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  @include glass;
+  border-radius: $radius-full;
+  padding: $space-2 $space-3;
+  transition: all $transition-fast;
+
+  &.active {
+    border-color: rgba(108, 99, 255, 0.6);
+    background: rgba(108, 99, 255, 0.15);
+  }
+
+  &.sm {
+    padding: $space-1 $space-2;
+    .avatar { font-size: $font-size-base; }
+    .name { font-size: $font-size-sm; }
+  }
+
+  &.md {
+    .avatar { font-size: $font-size-xl; }
+    .name { font-size: $font-size-base; font-weight: $font-weight-medium; }
+  }
+
+  &.lg {
+    padding: $space-3 $space-5;
+    .avatar { font-size: $font-size-3xl; }
+    .name { font-size: $font-size-lg; font-weight: $font-weight-semibold; }
+  }
+}
+
+.avatar {
+  line-height: 1;
+  user-select: none;
+}
+
+.name {
+  color: $color-text-primary;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.score {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  padding: 2px $space-2;
+  border-radius: $radius-full;
+  background: rgba(255, 255, 255, 0.1);
+  color: $color-text-primary;
+  min-width: 28px;
+  text-align: center;
+}
+
+.remove {
+  @include flex-center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: $font-size-lg;
+  line-height: 1;
+  color: $color-text-muted;
+  background: rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: all $transition-fast;
+  flex-shrink: 0;
+
+  &:hover {
+    background: rgba($color-wrong, 0.3);
+    color: $color-wrong;
+  }
+}

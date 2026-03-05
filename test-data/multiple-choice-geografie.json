@@ -1,0 +1,55 @@
+{
+  "title": "Geografie Quiz",
+  "description": "5 Multiple-Choice-Karten zum Testen der automatischen Auswertung",
+  "bgColor": "#11998e",
+  "cards": [
+    {
+      "type": "multiple_choice",
+      "front": "Eine Frage um zu teste wie lnage string gehandelt werden?",
+      "back": "Canberra",
+      "options": ["Eine sehr lange option für die erste wahl", "Melbourne", "Brisbane", "Canberra"],
+      "correctIndex": 3,
+      "bgColor": "#43CBFF"
+    },
+    {
+      "type": "multiple_choice",
+      "front": "Welches ist das flächengrößte Land der Welt?",
+      "back": "Russland",
+      "options": ["Kanada", "Russland", "USA", "China"],
+      "correctIndex": 1,
+      "bgColor": "#11998e"
+    },
+    {
+      "type": "multiple_choice",
+      "front": "Welcher Fluss ist der längste der Welt?",
+      "back": "Der Nil",
+      "options": ["Amazonas", "Jangtse", "Nil", "Mississippi"],
+      "correctIndex": 2,
+      "bgColor": "#38ef7d"
+    },
+    {
+      "type": "multiple_choice",
+      "front": "Auf welchem Kontinent liegt Ägypten?",
+      "back": "Afrika",
+      "options": ["Asien", "Europa", "Afrika", "Südamerika"],
+      "correctIndex": 2,
+      "bgColor": "#F7971E"
+    },
+    {
+      "type": "multiple_choice",
+      "front": "Wie viele Einwohner hat China ungefähr?",
+      "back": "1,4 Milliarden",
+      "options": ["800 Millionen", "1 Milliarde", "1,4 Milliarden", "2 Milliarden"],
+      "correctIndex": 2,
+      "bgColor": "#ee0979"
+    },
+    {
+      "type": "multiple_choice",
+      "front": "Welche Stadt ist die Hauptstadt Australiens?",
+      "back": "Canberra",
+      "options": ["Sydney", "Melbourne", "Brisbane", "Canberra"],
+      "correctIndex": 3,
+      "bgColor": "#43CBFF"
+    }
+  ]
+}

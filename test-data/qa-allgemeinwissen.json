@@ -1,0 +1,37 @@
+{
+  "title": "Allgemeinwissen",
+  "description": "5 klassische Frage-Antwort-Karten zum Testen des QA-Typs",
+  "bgColor": "#6C63FF",
+  "cards": [
+    {
+      "type": "qa",
+      "front": "Was ist die Hauptstadt von Japan?",
+      "back": "Tokio",
+      "bgColor": "#6C63FF"
+    },
+    {
+      "type": "qa",
+      "front": "Wie viele Planeten hat unser Sonnensystem?",
+      "back": "8 Planeten",
+      "bgColor": "#9708CC"
+    },
+    {
+      "type": "qa",
+      "front": "In welchem Jahr begann der Zweite Weltkrieg?",
+      "back": "1939",
+      "bgColor": "#FF6584"
+    },
+    {
+      "type": "qa",
+      "front": "Wer malte die Mona Lisa?",
+      "back": "Leonardo da Vinci",
+      "bgColor": "#43CBFF"
+    },
+    {
+      "type": "qa",
+      "front": "Was ist das chemische Symbol für Gold?",
+      "back": "Au (von lat. Aurum)",
+      "bgColor": "#F7971E"
+    }
+  ]
+}
