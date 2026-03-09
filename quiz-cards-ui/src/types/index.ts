@@ -68,6 +68,16 @@ export interface GamePlayer {
   avatarId: number;
   score: number;
   turnOrder: number;
+  sessionToken?: string | null;
+}
+
+export interface OnlineGameState {
+  status: 'lobby' | 'in_progress' | 'finished';
+  currentCardIndex: number;
+  totalCards: number;
+  players: GamePlayer[];
+  currentPlayer: GamePlayer | null;
+  card: Card | null;
 }
 
 export interface Game {
@@ -120,6 +130,21 @@ export interface RegisterDto {
   password: string;
   avatarId: number;
   inviteCode: string;
+}
+
+// ─── Shop ─────────────────────────────────────────────────────────────────────
+
+export type ShopStatus = 'pending' | 'approved' | 'rejected';
+
+export interface ShopSubmission {
+  id: string;
+  cardListId: string;
+  cardList: CardList;
+  submittedBy: string;
+  submitter: { id: string; name: string; email: string; avatarId: number };
+  status: ShopStatus;
+  submittedAt: string;
+  reviewedAt: string | null;
 }
 
 // ─── API Response ─────────────────────────────────────────────────────────────

@@ -35,9 +35,13 @@ export const Register = () => {
       setAuth(user, accessToken);
       navigate('/');
     } catch (err: unknown) {
+      const raw = (err as { response?: { data?: { message?: unknown } } })?.response?.data?.message;
       const msg =
-        (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
-      setError(msg ?? 'Registrierung fehlgeschlagen.');
+        typeof raw === 'string' ? raw
+        : Array.isArray(raw) ? (raw[0] as string)
+        : raw && typeof raw === 'object' ? ((raw as { message?: string }).message ?? 'Registrierung fehlgeschlagen.')
+        : 'Registrierung fehlgeschlagen.';
+      setError(msg);
     } finally {
       setLoading(false);
     }

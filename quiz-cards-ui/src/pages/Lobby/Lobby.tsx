@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { cardListsApi } from '../../api/cardLists';
+import { gamesApi } from '../../api/games';
+import { shopApi } from '../../api/shop';
 import { Button } from '../../components/common/Button/Button';
 import { PlayerChip } from '../../components/common/PlayerChip/PlayerChip';
 import { useAuthStore } from '../../stores/authStore';
@@ -44,6 +46,9 @@ function parseAndValidate(json: unknown): CardList {
 
 export const Lobby = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const authIncluded = (location.state as { authIncluded?: boolean })?.authIncluded ?? true;
+
   const { selectedPlayerIds, players, loadFromStorage } = usePlayersStore();
   const { startLocalGame } = useGameStore();
   const { isAuthenticated, user } = useAuthStore();
@@ -51,10 +56,13 @@ export const Lobby = () => {
   const [lists, setLists] = useState<CardList[]>([]);
   const [selectedListId, setSelectedListId] = useState<string | null>(null);
   const [importError, setImportError] = useState('');
+  const [maxCards, setMaxCards] = useState<number | null>(null);
+  const [submittedIds, setSubmittedIds] = useState<Set<string>>(new Set());
+  const [submittingId, setSubmittingId] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const quickPlayers = players.filter((p) => selectedPlayerIds.includes(p.id));
-  const authPlayer = isAuthenticated && user
+  const authPlayer = isAuthenticated && user && authIncluded
     ? [{ name: user.name, avatarId: user.avatarId }]
     : [];
   const selectedPlayers = [
@@ -119,12 +127,36 @@ export const Lobby = () => {
     const list = lists.find((l) => l.id === selectedListId);
     if (!list || selectedPlayers.length === 0) return;
 
-    const gameId = startLocalGame(list, selectedPlayers);
+    const gameId = startLocalGame(list, selectedPlayers, maxCards ?? undefined);
     navigate(`/game/${gameId}`);
+  };
+
+  const handleSubmitToShop = async (listId: string) => {
+    setSubmittingId(listId);
+    try {
+      await shopApi.submit(listId);
+      setSubmittedIds((prev) => new Set(prev).add(listId));
+    } catch {
+      // Already submitted or error – mark as submitted to avoid repeated clicks
+      setSubmittedIds((prev) => new Set(prev).add(listId));
+    } finally {
+      setSubmittingId(null);
+    }
+  };
+
+  const handleStartOnlineGame = async () => {
+    if (!selectedListId) return;
+    try {
+      const game = await gamesApi.create(selectedListId);
+      navigate(`/room/${game.id}`);
+    } catch {
+      setImportError('Online-Spiel konnte nicht erstellt werden.');
+    }
   };
 
   const selectedList = lists.find((l) => l.id === selectedListId);
   const canStart = selectedListId !== null && selectedPlayers.length >= 1;
+  const canStartOnline = selectedListId !== null && isAuthenticated;
 
   return (
     <div className={styles.page}>
@@ -200,6 +232,18 @@ export const Lobby = () => {
                         <span className={styles.listCheck}>✓</span>
                       )}
                     </button>
+                    {isAuthenticated && (
+                      <button
+                        className={styles.shopBtn}
+                        onClick={() => handleSubmitToShop(list.id)}
+                        type="button"
+                        disabled={submittingId === list.id || submittedIds.has(list.id)}
+                        title="In den Shop hochladen"
+                        aria-label={`${list.title} in den Shop hochladen`}
+                      >
+                        {submittedIds.has(list.id) ? '✓' : submittingId === list.id ? '…' : '🛒'}
+                      </button>
+                    )}
                     <button
                       className={styles.deleteListBtn}
                       onClick={() => handleDeleteList(list.id)}
@@ -223,6 +267,33 @@ export const Lobby = () => {
             </span>
           </div>
         )}
+
+        {selectedList && (selectedList.cards?.length ?? 0) > 10 && (
+          <section className={styles.section}>
+            <h2 className={styles.sectionTitle}>Wie viele Karten?</h2>
+            <div className={styles.cardCountOptions}>
+              {([10, 20, 30, 50] as const)
+                .filter((n) => n < (selectedList.cards?.length ?? 0))
+                .map((n) => (
+                  <button
+                    key={n}
+                    type="button"
+                    className={`${styles.countBtn} ${maxCards === n ? styles.countBtnActive : ''}`}
+                    onClick={() => setMaxCards(maxCards === n ? null : n)}
+                  >
+                    {n}
+                  </button>
+                ))}
+              <button
+                type="button"
+                className={`${styles.countBtn} ${maxCards === null ? styles.countBtnActive : ''}`}
+                onClick={() => setMaxCards(null)}
+              >
+                Alle ({selectedList.cards?.length ?? 0})
+              </button>
+            </div>
+          </section>
+        )}
       </div>
 
       <div className={styles.cta}>
@@ -233,8 +304,19 @@ export const Lobby = () => {
           disabled={!canStart}
           onClick={handleStartGame}
         >
-          Spiel starten!
+          Lokal spielen!
         </Button>
+        {isAuthenticated && (
+          <Button
+            variant="secondary"
+            size="xl"
+            fullWidth
+            disabled={!canStartOnline}
+            onClick={handleStartOnlineGame}
+          >
+            🌐 Online spielen
+          </Button>
+        )}
       </div>
     </div>
   );

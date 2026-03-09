@@ -14,6 +14,7 @@ import { CardProgress, MAX_LEVEL, MIN_LEVEL } from '../cards/card-progress.entit
 import { CreateGameDto } from './dto/create-game.dto';
 import { AddPlayerDto } from './dto/add-player.dto';
 import { SubmitAnswerDto } from './dto/submit-answer.dto';
+import { v4 as uuidv4 } from 'uuid';
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -105,6 +106,53 @@ export class GamesService {
     return game;
   }
 
+  async getState(gameId: string): Promise<{
+    status: string;
+    currentCardIndex: number;
+    totalCards: number;
+    players: GamePlayer[];
+    currentPlayer: GamePlayer | null;
+    card: Card | null;
+  }> {
+    const game = await this.gameRepo.findOne({
+      where: { id: gameId },
+      relations: ['players'],
+    });
+    if (!game) throw new NotFoundException(`Game ${gameId} not found`);
+
+    const players = [...game.players].sort((a, b) => a.turnOrder - b.turnOrder);
+
+    if (game.status !== GameStatus.IN_PROGRESS) {
+      return {
+        status: game.status,
+        currentCardIndex: game.currentCardIndex,
+        totalCards: game.cardOrder?.length ?? 0,
+        players,
+        currentPlayer: null,
+        card: null,
+      };
+    }
+
+    const { orderedCards, totalPlayable } = await this.getOrderedCards(game);
+
+    const card =
+      game.currentCardIndex < totalPlayable
+        ? orderedCards[game.currentCardIndex]
+        : null;
+    const currentPlayer = card
+      ? players[game.currentCardIndex % players.length]
+      : null;
+
+    return {
+      status: game.status,
+      currentCardIndex: game.currentCardIndex,
+      totalCards: totalPlayable,
+      players,
+      currentPlayer,
+      card,
+    };
+  }
+
   async addPlayer(gameId: string, dto: AddPlayerDto): Promise<GamePlayer> {
     const game = await this.gameRepo.findOne({
       where: { id: gameId },
@@ -122,6 +170,7 @@ export class GamesService {
       avatarId: dto.avatarId,
       score: 0,
       turnOrder: game.players.length,
+      sessionToken: uuidv4(),
     });
     return this.playerRepo.save(player);
   }

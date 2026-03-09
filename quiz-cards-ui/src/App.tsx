@@ -5,6 +5,8 @@ import { Lobby } from './pages/Lobby/Lobby';
 import { Login } from './pages/Login/Login';
 import { Register } from './pages/Register/Register';
 import { Results } from './pages/Results/Results';
+import { Room } from './pages/Room/Room';
+import { Shop } from './pages/Shop/Shop';
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
         <Route path="/lobby" element={<Lobby />} />
         <Route path="/game/:id" element={<Game />} />
         <Route path="/game/:id/results" element={<Results />} />
+        <Route path="/shop" element={<Shop />} />
+        <Route path="/room/:id" element={<Room />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </HashRouter>

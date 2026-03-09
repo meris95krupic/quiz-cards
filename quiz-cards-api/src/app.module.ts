@@ -15,6 +15,8 @@ import { Game } from './modules/games/game.entity';
 import { GamePlayer } from './modules/games/game-player.entity';
 import { GameTurn } from './modules/games/game-turn.entity';
 import { CardProgress } from './modules/cards/card-progress.entity';
+import { ShopModule } from './modules/shop/shop.module';
+import { ShopSubmission } from './modules/shop/shop-submission.entity';
 
 @Module({
   imports: [
@@ -33,7 +35,7 @@ import { CardProgress } from './modules/cards/card-progress.entity';
         username: config.get<string>('database.user'),
         password: config.get<string>('database.password'),
         database: config.get<string>('database.name'),
-        entities: [User, CardList, Card, Game, GamePlayer, GameTurn, CardProgress],
+        entities: [User, CardList, Card, Game, GamePlayer, GameTurn, CardProgress, ShopSubmission],
         synchronize: config.get<string>('nodeEnv') !== 'production',
         logging: config.get<string>('nodeEnv') === 'development',
         ssl: config.get<string>('database.ssl') === 'true' ? { rejectUnauthorized: false } : false,
@@ -55,6 +57,7 @@ import { CardProgress } from './modules/cards/card-progress.entity';
     UsersModule,
     CardListsModule,
     GamesModule,
+    ShopModule,
   ],
 })
 export class AppModule {}

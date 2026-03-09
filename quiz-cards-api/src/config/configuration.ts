@@ -20,4 +20,5 @@ export default () => ({
     dsn: process.env.SENTRY_DSN ?? '',
   },
   inviteCode: process.env.INVITE_CODE ?? '',
+  adminEmail: process.env.ADMIN_EMAIL ?? 'meris-k@hotmail.com',
 });

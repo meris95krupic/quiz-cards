@@ -39,7 +39,7 @@ interface GameState {
   setFlipped: (flipped: boolean) => void;
 
   // ─── Local mode actions ──────────────────────────────────────────────────────
-  startLocalGame: (list: CardList, quickPlayers: { name: string; avatarId: number }[]) => string;
+  startLocalGame: (list: CardList, quickPlayers: { name: string; avatarId: number }[], maxCards?: number) => string;
   localGetCurrentCard: () => CurrentCardResponse | null;
   localAnswer: (result: TurnResult) => LocalAnswerResult;
   localGetResults: () => GameResults;
@@ -129,11 +129,12 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   // ─── Local mode ───────────────────────────────────────────────────────────────
 
-  startLocalGame: (list, quickPlayers) => {
+  startLocalGame: (list, quickPlayers, maxCards) => {
     const fakeGameId = `local-${generateId()}`;
     const allCards = list.cards ?? [];
     const n = quickPlayers.length;
-    const count = Math.max(n, Math.floor(allCards.length / Math.max(n, 1)) * Math.max(n, 1));
+    const cap = maxCards ? Math.min(maxCards, allCards.length) : allCards.length;
+    const count = Math.max(n, Math.floor(cap / Math.max(n, 1)) * Math.max(n, 1));
 
     // Use learning progress to weight card selection
     const progress = getListProgress(list.id);

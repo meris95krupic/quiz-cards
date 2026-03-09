@@ -48,6 +48,29 @@
   }
 }
 
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+}
+
+.shopLink {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-text-muted;
+  cursor: pointer;
+  padding: $space-2 $space-4;
+  border-radius: $radius-full;
+  border: 1px solid $glass-border;
+  background: $glass-bg;
+  transition: all $transition-fast;
+
+  &:hover {
+    color: $color-text-primary;
+    background: $glass-bg-hover;
+  }
+}
+
 .userArea {
   display: flex;
   align-items: center;
@@ -218,6 +241,26 @@
   &:hover {
     opacity: 1;
   }
+}
+
+.authPlayerRow {
+  margin-top: $space-2;
+  padding-top: $space-3;
+  border-top: 1px solid $glass-border;
+
+  .playerSelect {
+    width: 100%;
+  }
+}
+
+.youBadge {
+  font-size: $font-size-xs;
+  font-weight: 600;
+  color: #43CBFF;
+  background: rgba(67, 203, 255, 0.12);
+  border: 1px solid rgba(67, 203, 255, 0.3);
+  border-radius: $radius-full;
+  padding: 2px $space-2;
 }
 
 .startArea {

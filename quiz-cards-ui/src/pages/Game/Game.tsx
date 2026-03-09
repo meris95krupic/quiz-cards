@@ -115,7 +115,10 @@ export const Game = () => {
       <div className={styles.topBar}>
         <button
           className={styles.menuBtn}
-          onClick={() => { if (window.confirm('Spiel beenden?')) navigate('/'); }}
+          onClick={() => {
+            if (window.confirm('Spiel beenden? Du siehst danach die aktuelle Rangliste.'))
+              navigate(`/game/${gameId}/results`);
+          }}
         >✕</button>
         <ProgressBar current={cardIndex + 1} total={totalCards} />
       </div>

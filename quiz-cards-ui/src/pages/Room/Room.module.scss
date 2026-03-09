@@ -1,0 +1,373 @@
+@use '../../styles/tokens' as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: $color-surface;
+  @include safe-padding-top;
+}
+
+// ─── Join ─────────────────────────────────────────────────────────────────────
+
+.joinCard {
+  margin: auto;
+  width: 100%;
+  max-width: 420px;
+  padding: $space-8 $space-6;
+  display: flex;
+  flex-direction: column;
+  gap: $space-5;
+}
+
+.joinTitle {
+  font-size: $font-size-2xl;
+  font-weight: 700;
+  color: $color-text-primary;
+  text-align: center;
+}
+
+.joinInfo {
+  text-align: center;
+  font-size: $font-size-sm;
+  color: $color-text-muted;
+}
+
+.avatarSection {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.avatarLabel {
+  font-size: $font-size-sm;
+  font-weight: 500;
+  color: $color-text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+// ─── Lobby ────────────────────────────────────────────────────────────────────
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $space-4 $space-5;
+  border-bottom: 1px solid $glass-border;
+}
+
+.title {
+  font-size: $font-size-xl;
+  font-weight: 700;
+  color: $color-text-primary;
+}
+
+.badge {
+  font-size: $font-size-sm;
+  color: $color-text-muted;
+  padding: $space-1 $space-3;
+  border-radius: $radius-full;
+  background: $glass-bg;
+  border: 1px solid $glass-border;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: $space-5;
+  padding: $space-5;
+  max-width: 540px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.linkBox {
+  @include glass;
+  border-radius: $radius-lg;
+  padding: $space-4;
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.linkLabel {
+  font-size: $font-size-xs;
+  color: $color-text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.linkText {
+  font-size: $font-size-xs;
+  color: $color-text-primary;
+  word-break: break-all;
+  background: rgba(0, 0, 0, 0.3);
+  padding: $space-2 $space-3;
+  border-radius: $radius-sm;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.sectionTitle {
+  font-size: $font-size-lg;
+  font-weight: 600;
+  color: $color-text-primary;
+}
+
+.playerList {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.playerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $space-3 $space-4;
+  border-radius: $radius-lg;
+  background: $glass-bg;
+  border: 1px solid $glass-border;
+}
+
+.playerRowMe {
+  border-color: rgba(108, 99, 255, 0.5);
+  background: rgba(108, 99, 255, 0.1);
+}
+
+.hostBadge {
+  font-size: $font-size-xs;
+  font-weight: 600;
+  color: #FFD200;
+  background: rgba(255, 210, 0, 0.15);
+  border: 1px solid rgba(255, 210, 0, 0.3);
+  border-radius: $radius-full;
+  padding: $space-1 $space-2;
+}
+
+.waitMsg {
+  @include flex-center;
+  flex-direction: column;
+  gap: $space-3;
+  padding: $space-8;
+  color: $color-text-muted;
+  font-size: $font-size-sm;
+}
+
+// ─── Playing ──────────────────────────────────────────────────────────────────
+
+.gameHeader {
+  display: flex;
+  flex-direction: column;
+}
+
+.progressBar {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  width: 100%;
+}
+
+.progressFill {
+  height: 100%;
+  background: $gradient-primary;
+  transition: width 0.3s ease;
+}
+
+.gameHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $space-3 $space-5;
+}
+
+.cardCounter {
+  font-size: $font-size-sm;
+  color: $color-text-muted;
+  font-weight: 600;
+}
+
+.scores {
+  display: flex;
+  gap: $space-3;
+}
+
+.score {
+  font-size: $font-size-sm;
+  color: $color-text-muted;
+}
+
+.scoreMe {
+  color: $color-text-primary;
+  font-weight: 700;
+}
+
+.gameContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $space-5;
+  gap: $space-5;
+}
+
+.turnBanner {
+  font-size: $font-size-xl;
+  font-weight: 700;
+  @include gradient-text($gradient-primary);
+  animation: pulse 1.5s ease infinite;
+}
+
+// ─── Card flip ────────────────────────────────────────────────────────────────
+
+.cardWrapper {
+  perspective: 1200px;
+  width: 100%;
+  max-width: 420px;
+  min-height: 220px;
+  cursor: pointer;
+}
+
+.cardInner {
+  position: relative;
+  width: 100%;
+  min-height: 220px;
+  transform-style: preserve-3d;
+  transition: transform 0.45s ease;
+}
+
+.cardFlipped .cardInner {
+  transform: rotateY(180deg);
+}
+
+.cardFront,
+.cardBack {
+  position: absolute;
+  inset: 0;
+  @include glass;
+  border-radius: $radius-2xl;
+  padding: $space-8;
+  @include flex-center;
+  flex-direction: column;
+  gap: $space-3;
+  backface-visibility: hidden;
+}
+
+.cardBack {
+  transform: rotateY(180deg);
+  background: rgba(108, 99, 255, 0.15);
+  border-color: rgba(108, 99, 255, 0.4);
+}
+
+.cardText {
+  font-size: $font-size-xl;
+  font-weight: 600;
+  color: $color-text-primary;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.tapHint {
+  font-size: $font-size-xs;
+  color: $color-text-muted;
+  margin-top: $space-2;
+}
+
+// ─── Answer buttons ───────────────────────────────────────────────────────────
+
+.answerBtns {
+  display: flex;
+  gap: $space-3;
+  width: 100%;
+  max-width: 420px;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  width: 100%;
+  max-width: 420px;
+}
+
+.optionBtn {
+  padding: $space-4 $space-5;
+  border-radius: $radius-xl;
+  background: $glass-bg;
+  border: 1px solid $glass-border;
+  color: $color-text-primary;
+  font-size: $font-size-base;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover:not(:disabled) {
+    background: rgba(108, 99, 255, 0.2);
+    border-color: rgba(108, 99, 255, 0.5);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+// ─── Waiting screen ───────────────────────────────────────────────────────────
+
+.waitingScreen {
+  @include flex-center;
+  flex-direction: column;
+  gap: $space-4;
+  padding: $space-10;
+}
+
+.waitAvatar {
+  font-size: 4rem;
+}
+
+.waitName {
+  font-size: $font-size-2xl;
+  font-weight: 700;
+  color: $color-text-primary;
+}
+
+.waitSub {
+  font-size: $font-size-base;
+  color: $color-text-muted;
+}
+
+// ─── Shared ───────────────────────────────────────────────────────────────────
+
+.error {
+  font-size: $font-size-sm;
+  color: #ef4444;
+  padding: $space-3 $space-4;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: $radius-md;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  border-top-color: #6C63FF;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}

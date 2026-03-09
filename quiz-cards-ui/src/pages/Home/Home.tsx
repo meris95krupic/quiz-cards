@@ -18,6 +18,7 @@ export const Home = () => {
   const [avatarId, setAvatarId] = useState(1);
   const [nameError, setNameError] = useState('');
   const [showForm, setShowForm] = useState(false);
+  const [authIncluded, setAuthIncluded] = useState(true);
 
   useEffect(() => {
     loadFromStorage();
@@ -40,12 +41,12 @@ export const Home = () => {
     setShowForm(false);
   };
 
-  const authPlayerCount = isAuthenticated ? 1 : 0;
-  const totalPlayerCount = selectedPlayerIds.length + authPlayerCount;
+  const authCount = isAuthenticated && authIncluded ? 1 : 0;
+  const totalPlayerCount = selectedPlayerIds.length + authCount;
   const canStartGame = totalPlayerCount >= 1;
 
   const handleStartGame = () => {
-    navigate('/lobby');
+    navigate('/lobby', { state: { authIncluded } });
   };
 
   return (
@@ -56,16 +57,14 @@ export const Home = () => {
           <span className={styles.logoIcon}>🃏</span>
           <span className={styles.logoText}>QuizCards</span>
         </h1>
-        {isAuthenticated && user ? (
-          <div className={styles.userArea}>
-            <span className={styles.userName}>{user.name}</span>
+        <div className={styles.headerRight}>
+          <button className={styles.shopLink} onClick={() => navigate('/shop')}>🛒</button>
+          {isAuthenticated ? (
             <button className={styles.loginLink} onClick={logout}>Ausloggen</button>
-          </div>
-        ) : (
-          <button className={styles.loginLink} onClick={() => navigate('/login')}>
-            Einloggen
-          </button>
-        )}
+          ) : (
+            <button className={styles.loginLink} onClick={() => navigate('/login')}>Einloggen</button>
+          )}
+        </div>
       </header>
 
       <main className={styles.main}>
@@ -110,13 +109,8 @@ export const Home = () => {
             </div>
           )}
 
-          {/* Player list */}
-          {players.length === 0 && !showForm ? (
-            <div className={styles.empty}>
-              <span>👥</span>
-              <p>Noch keine Spieler. Füge mindestens einen hinzu!</p>
-            </div>
-          ) : (
+          {/* Quick player list */}
+          {players.length > 0 && (
             <ul className={styles.playerList}>
               {players.map((player) => (
                 <li key={player.id} className={styles.playerItem}>
@@ -127,10 +121,7 @@ export const Home = () => {
                     onClick={() => toggleSelectPlayer(player.id)}
                     type="button"
                   >
-                    <PlayerChip
-                      name={player.name}
-                      avatarId={player.avatarId}
-                    />
+                    <PlayerChip name={player.name} avatarId={player.avatarId} />
                     {selectedPlayerIds.includes(player.id) && (
                       <span className={styles.checkmark}>✓</span>
                     )}
@@ -147,12 +138,35 @@ export const Home = () => {
               ))}
             </ul>
           )}
+
+          {/* Auth user chip */}
+          {isAuthenticated && user && (
+            <div className={styles.authPlayerRow}>
+              <button
+                className={`${styles.playerSelect} ${authIncluded ? styles.selected : ''}`}
+                onClick={() => setAuthIncluded((v) => !v)}
+                type="button"
+              >
+                <PlayerChip name={user.name} avatarId={user.avatarId} />
+                <span className={styles.youBadge}>Du</span>
+                {authIncluded && <span className={styles.checkmark}>✓</span>}
+              </button>
+            </div>
+          )}
+
+          {/* Empty state */}
+          {players.length === 0 && !showForm && !isAuthenticated && (
+            <div className={styles.empty}>
+              <span>👥</span>
+              <p>Noch keine Spieler. Füge mindestens einen hinzu!</p>
+            </div>
+          )}
         </section>
 
         {/* Start button */}
         <div className={styles.startArea}>
-          {players.length > 0 && selectedPlayerIds.length === 0 && !isAuthenticated && (
-            <p className={styles.hint}>Tippe auf Spieler, um sie auszuwählen</p>
+          {!canStartGame && (
+            <p className={styles.hint}>Wähle mindestens einen Spieler aus</p>
           )}
           <Button
             variant="primary"
@@ -161,8 +175,7 @@ export const Home = () => {
             disabled={!canStartGame}
             onClick={handleStartGame}
           >
-            Spiel starten
-            {canStartGame && ` (${totalPlayerCount})`}
+            Spiel starten{canStartGame && ` (${totalPlayerCount})`}
           </Button>
         </div>
       </main>

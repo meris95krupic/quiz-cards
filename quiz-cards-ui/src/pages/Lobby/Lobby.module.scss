@@ -219,6 +219,20 @@
   color: white;
 }
 
+.shopBtn {
+  padding: $space-2;
+  font-size: $font-size-base;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity $transition-fast;
+  border-radius: $radius-sm;
+  flex-shrink: 0;
+  margin-top: $space-2;
+
+  &:hover:not(:disabled) { opacity: 1; }
+  &:disabled { cursor: default; opacity: 0.6; }
+}
+
 .deleteListBtn {
   padding: $space-2;
   font-size: $font-size-base;
@@ -258,4 +272,34 @@
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+.cardCountOptions {
+  display: flex;
+  gap: $space-2;
+  flex-wrap: wrap;
+}
+
+.countBtn {
+  padding: $space-2 $space-4;
+  border-radius: $radius-full;
+  border: 2px solid $glass-border;
+  background: $glass-bg;
+  color: $color-text-muted;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: #6C63FF;
+    color: $color-text-primary;
+  }
+
+  &.countBtnActive {
+    background: #6C63FF;
+    border-color: #6C63FF;
+    color: white;
+    font-weight: $font-weight-bold;
+  }
 }

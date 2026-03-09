@@ -44,6 +44,9 @@ export class GamePlayer {
   @Column({ name: 'turn_order', type: 'int' })
   turnOrder: number;
 
+  @Column({ name: 'session_token', type: 'varchar', length: 36, nullable: true })
+  sessionToken: string | null;
+
   @OneToMany(() => GameTurn, (gt) => gt.gamePlayer)
   turns: GameTurn[];
 }

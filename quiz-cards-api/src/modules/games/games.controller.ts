@@ -35,6 +35,12 @@ export class GamesController {
     return this.gamesService.findOne(id);
   }
 
+  @Get(':id/state')
+  @ApiOperation({ summary: 'Get full game state for polling (lobby/playing/finished)' })
+  getState(@Param('id', ParseUUIDPipe) id: string) {
+    return this.gamesService.getState(id);
+  }
+
   @Post(':id/players')
   @ApiOperation({ summary: 'Add a player to the game lobby' })
   addPlayer(@Param('id', ParseUUIDPipe) id: string, @Body() dto: AddPlayerDto) {
