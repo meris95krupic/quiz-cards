@@ -103,6 +103,11 @@ export interface GameResults {
   turns: GameTurn[];
 }
 
+export interface OnlineGameResults {
+  winner: GamePlayer;
+  ranking: GamePlayer[];
+}
+
 export interface GameTurn {
   id: string;
   gameId: string;

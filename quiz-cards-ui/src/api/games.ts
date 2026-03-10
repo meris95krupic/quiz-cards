@@ -1,4 +1,4 @@
-import type { CurrentCardResponse, Game, GameResults, GamePlayer, OnlineGameState, TurnResult } from '../types';
+import type { CurrentCardResponse, Game, GamePlayer, OnlineGameResults, OnlineGameState, TurnResult } from '../types';
 import { apiClient } from './client';
 
 export const gamesApi = {
@@ -34,8 +34,8 @@ export const gamesApi = {
     await apiClient.post(`/games/${gameId}/answer`, { result, ...(chosenIndex !== undefined && { chosenIndex }) });
   },
 
-  getResults: async (gameId: string): Promise<GameResults> => {
-    const { data } = await apiClient.get<GameResults>(`/games/${gameId}/results`);
+  getResults: async (gameId: string): Promise<OnlineGameResults> => {
+    const { data } = await apiClient.get<OnlineGameResults>(`/games/${gameId}/results`);
     return data;
   },
 

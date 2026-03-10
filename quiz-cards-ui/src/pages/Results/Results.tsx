@@ -1,26 +1,33 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { gamesApi } from '../../api/games';
 import { Button } from '../../components/common/Button/Button';
 import { useGameStore } from '../../stores/gameStore';
-import type { GameResults } from '../../types';
+import type { GamePlayer } from '../../types';
 import { getAvatarEmoji } from '../../utils/avatars';
 import styles from './Results.module.scss';
 
 const MEDALS = ['🥇', '🥈', '🥉'];
 
 export const Results = () => {
-  useParams<{ id: string }>();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { resetGame, isLocalMode, localGetResults } = useGameStore();
 
-  const [results, setResults] = useState<GameResults | null>(null);
+  const [players, setPlayers] = useState<GamePlayer[] | null>(null);
+  const [loadError, setLoadError] = useState('');
 
   useEffect(() => {
     if (isLocalMode) {
-      setResults(localGetResults());
+      setPlayers(localGetResults().players);
+    } else if (id) {
+      gamesApi
+        .getResults(id)
+        .then(({ ranking }) => setPlayers(ranking))
+        .catch(() => setLoadError('Ergebnisse konnten nicht geladen werden.'));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLocalMode]);
+  }, [isLocalMode, id]);
 
   const handlePlayAgain = () => {
     resetGame();
@@ -32,15 +39,22 @@ export const Results = () => {
     navigate('/');
   };
 
-  if (!results) {
+  if (loadError) {
+    return (
+      <div className={styles.loadingPage}>
+        <p style={{ color: 'var(--color-error, #ff4d4f)', padding: '1rem' }}>{loadError}</p>
+        <Button variant="ghost" onClick={handleHome}>Zur Startseite</Button>
+      </div>
+    );
+  }
+
+  if (!players) {
     return (
       <div className={styles.loadingPage}>
         <span className={styles.loadingSpinner} />
       </div>
     );
   }
-
-  const players = results.players;
 
   return (
     <div className={styles.page}>
