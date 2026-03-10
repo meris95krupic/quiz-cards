@@ -10,6 +10,7 @@ import { getAvatarEmoji } from '../../utils/avatars';
 import styles from './Room.module.scss';
 
 const SESSION_KEY_PREFIX = 'room_session_';
+const SESSIONS_KEY_PREFIX = 'room_sessions_';
 
 interface StoredSession {
   playerId: string;
@@ -22,6 +23,15 @@ function getStoredSession(gameId: string): StoredSession | null {
     return raw ? (JSON.parse(raw) as StoredSession) : null;
   } catch {
     return null;
+  }
+}
+
+function getStoredSessions(gameId: string): StoredSession[] {
+  try {
+    const raw = sessionStorage.getItem(SESSIONS_KEY_PREFIX + gameId);
+    return raw ? (JSON.parse(raw) as StoredSession[]) : [];
+  } catch {
+    return [];
   }
 }
 
@@ -42,6 +52,8 @@ export const Room = () => {
 
   const [phase, setPhase] = useState<Phase>('join');
   const [myPlayer, setMyPlayer] = useState<GamePlayer | null>(null);
+  // All session tokens belonging to this device (pre-added players)
+  const [myTokens, setMyTokens] = useState<Set<string>>(new Set());
   const [gameState, setGameState] = useState<OnlineGameState | null>(null);
   const [isFlipped, setIsFlipped] = useState(false);
   const [answering, setAnswering] = useState(false);
@@ -57,7 +69,7 @@ export const Room = () => {
   }, []);
 
   const applyState = useCallback(
-    (s: OnlineGameState, session?: StoredSession | null) => {
+    (s: OnlineGameState, allTokens?: Set<string>) => {
       setGameState(s);
 
       if (s.status === 'finished') {
@@ -69,12 +81,14 @@ export const Room = () => {
         setPhase('playing');
       }
 
-      const stored = session ?? getStoredSession(gameId ?? '');
-      if (stored) {
-        const me = s.players.find((p) => p.sessionToken === stored.sessionToken);
-        if (me) setMyPlayer(me);
-      }
+      // Update myPlayer to the current active player from this device
+      const tokens = allTokens ?? myTokens;
+      const currentOnThisDevice = s.players.find(
+        (p) => p.sessionToken != null && tokens.has(p.sessionToken),
+      );
+      if (currentOnThisDevice) setMyPlayer(currentOnThisDevice);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [gameId, navigate, stopPolling],
   );
 
@@ -95,20 +109,33 @@ export const Room = () => {
 
   useEffect(() => {
     if (!gameId) return;
-    const stored = getStoredSession(gameId);
+
+    // Load pre-added sessions (from Lobby) + any single session
+    const preSessions = getStoredSessions(gameId);
+    const singleSession = getStoredSession(gameId);
+
+    const allSessions: StoredSession[] = preSessions.length > 0
+      ? preSessions
+      : singleSession ? [singleSession] : [];
+
+    const tokenSet = new Set(allSessions.map((s) => s.sessionToken));
+    if (tokenSet.size > 0) setMyTokens(tokenSet);
 
     gamesApi
       .getState(gameId)
       .then((s) => {
-        if (stored) {
-          const me = s.players.find((p) => p.sessionToken === stored.sessionToken);
+        if (allSessions.length > 0) {
+          // Find first matching player for display
+          const me = s.players.find(
+            (p) => p.sessionToken != null && tokenSet.has(p.sessionToken),
+          );
           if (me) {
             setMyPlayer(me);
             setPhase(s.status === 'in_progress' ? 'playing' : 'lobby');
           }
+          startPolling();
         }
-        applyState(s, stored);
-        if (stored) startPolling();
+        applyState(s, tokenSet);
       })
       .catch(() => setError('Raum nicht gefunden.'));
 
@@ -134,6 +161,8 @@ export const Room = () => {
       const player = await gamesApi.addPlayer(gameId, { name: trimmed, avatarId });
       const token = player.sessionToken ?? player.id;
       storeSession(gameId, player.id, token);
+      const tokenSet = new Set([token]);
+      setMyTokens(tokenSet);
       setMyPlayer(player);
       setPhase('lobby');
     } catch (e: unknown) {
@@ -159,6 +188,7 @@ export const Room = () => {
   const handleAnswer = async (result: TurnResult, chosenIndex?: number) => {
     if (!gameId || answering) return;
     setAnswering(true);
+    setError('');
     try {
       await gamesApi.answer(gameId, result, chosenIndex);
       setIsFlipped(false);
@@ -173,8 +203,12 @@ export const Room = () => {
 
   const players = gameState?.players ?? [];
   const isHost = players[0]?.id === myPlayer?.id;
-  const isMyTurn = gameState?.currentPlayer?.id === myPlayer?.id;
+  // Turn belongs to this device if current player's token is in our set
+  const isMyTurn = gameState?.currentPlayer != null
+    && gameState.currentPlayer.sessionToken != null
+    && myTokens.has(gameState.currentPlayer.sessionToken);
   const card = gameState?.card ?? null;
+  const activePlayer = gameState?.currentPlayer ?? null;
 
   // ─── Join form ─────────────────────────────────────────────────────────────
 
@@ -239,7 +273,9 @@ export const Room = () => {
               {players.map((p, i) => (
                 <div
                   key={p.id}
-                  className={`${styles.playerRow} ${p.id === myPlayer?.id ? styles.playerRowMe : ''}`}
+                  className={`${styles.playerRow} ${
+                    p.sessionToken != null && myTokens.has(p.sessionToken) ? styles.playerRowMe : ''
+                  }`}
                 >
                   <PlayerChip name={p.name} avatarId={p.avatarId} />
                   {i === 0 && <span className={styles.hostBadge}>Host</span>}
@@ -281,7 +317,12 @@ export const Room = () => {
           </span>
           <div className={styles.scores}>
             {players.map((p) => (
-              <span key={p.id} className={`${styles.score} ${p.id === myPlayer?.id ? styles.scoreMe : ''}`}>
+              <span
+                key={p.id}
+                className={`${styles.score} ${
+                  p.sessionToken != null && myTokens.has(p.sessionToken) ? styles.scoreMe : ''
+                }`}
+              >
                 {getAvatarEmoji(p.avatarId)} {p.score}
               </span>
             ))}
@@ -292,9 +333,11 @@ export const Room = () => {
       {error && <p className={styles.error}>{error}</p>}
 
       <div className={styles.gameContent}>
-        {isMyTurn && card ? (
+        {isMyTurn && card && activePlayer ? (
           <>
-            <p className={styles.turnBanner}>Dein Zug!</p>
+            <p className={styles.turnBanner}>
+              {myTokens.size > 1 ? `${activePlayer.name} ist dran!` : 'Dein Zug!'}
+            </p>
             <div
               className={`${styles.cardWrapper} ${isFlipped ? styles.cardFlipped : ''}`}
               onClick={() => !isFlipped && card.type === 'qa' && setIsFlipped(true)}
@@ -341,12 +384,12 @@ export const Room = () => {
           </>
         ) : (
           <div className={styles.waitingScreen}>
-            {gameState?.currentPlayer && (
+            {activePlayer && (
               <>
                 <div className={styles.waitAvatar}>
-                  {getAvatarEmoji(gameState.currentPlayer.avatarId)}
+                  {getAvatarEmoji(activePlayer.avatarId)}
                 </div>
-                <p className={styles.waitName}>{gameState.currentPlayer.name}</p>
+                <p className={styles.waitName}>{activePlayer.name}</p>
                 <p className={styles.waitSub}>ist dran…</p>
               </>
             )}

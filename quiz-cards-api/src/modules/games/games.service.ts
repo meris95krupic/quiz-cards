@@ -10,7 +10,11 @@ import { GamePlayer } from './game-player.entity';
 import { GameTurn, TurnResult } from './game-turn.entity';
 import { CardList } from '../card-lists/card-list.entity';
 import { Card, CardType } from '../cards/card.entity';
-import { CardProgress, MAX_LEVEL, MIN_LEVEL } from '../cards/card-progress.entity';
+import {
+  CardProgress,
+  MAX_LEVEL,
+  MIN_LEVEL,
+} from '../cards/card-progress.entity';
 import { CreateGameDto } from './dto/create-game.dto';
 import { AddPlayerDto } from './dto/add-player.dto';
 import { SubmitAnswerDto } from './dto/submit-answer.dto';
@@ -160,7 +164,9 @@ export class GamesService {
     });
     if (!game) throw new NotFoundException(`Game ${gameId} not found`);
     if (game.status !== GameStatus.LOBBY) {
-      throw new BadRequestException('Cannot add players after game has started');
+      throw new BadRequestException(
+        'Cannot add players after game has started',
+      );
     }
 
     const player = this.playerRepo.create({
@@ -245,7 +251,8 @@ export class GamesService {
     const currentPlayer = players[game.currentCardIndex % players.length];
 
     // Include card level for solo user
-    const soloUserId = players.length === 1 ? (players[0].userId ?? null) : null;
+    const soloUserId =
+      players.length === 1 ? (players[0].userId ?? null) : null;
     let cardLevel = 1;
     if (soloUserId) {
       const progress = await this.progressRepo.findOne({
@@ -285,12 +292,21 @@ export class GamesService {
 
       const { orderedCards, totalPlayable } = await this.getOrderedCards(game);
       const card = orderedCards[game.currentCardIndex];
-      const players = [...game.players].sort((a, b) => a.turnOrder - b.turnOrder);
+      if (!card)
+        throw new BadRequestException(
+          'Karte nicht gefunden – Spiel möglicherweise bereits beendet',
+        );
+      const players = [...game.players].sort(
+        (a, b) => a.turnOrder - b.turnOrder,
+      );
       const currentPlayer = players[game.currentCardIndex % players.length];
 
       // For multiple_choice: auto-validate if chosenIndex provided
       let result = dto.result;
-      if (card.type === CardType.MULTIPLE_CHOICE && dto.chosenIndex !== undefined) {
+      if (
+        card.type === CardType.MULTIPLE_CHOICE &&
+        dto.chosenIndex !== undefined
+      ) {
         result =
           dto.chosenIndex === card.correctIndex
             ? TurnResult.CORRECT
@@ -315,7 +331,12 @@ export class GamesService {
       let newCardLevel = 1;
       if (userId) {
         const levelDelta = result === TurnResult.CORRECT ? 1 : -1;
-        newCardLevel = await this.upsertProgress(manager, userId, card.id, levelDelta);
+        newCardLevel = await this.upsertProgress(
+          manager,
+          userId,
+          card.id,
+          levelDelta,
+        );
       }
 
       // Advance card index (skip = card stays in API, advance anyway per FE behaviour)
@@ -419,7 +440,9 @@ export class GamesService {
     cardId: string,
     delta: number,
   ): Promise<number> {
-    let row = await manager.findOne(CardProgress, { where: { userId, cardId } });
+    let row = await manager.findOne(CardProgress, {
+      where: { userId, cardId },
+    });
     if (!row) {
       row = manager.create(CardProgress, { userId, cardId, level: 1 });
     }
