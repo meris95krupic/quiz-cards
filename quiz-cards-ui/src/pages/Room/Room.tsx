@@ -163,8 +163,9 @@ export const Room = () => {
       await gamesApi.answer(gameId, result, chosenIndex);
       setIsFlipped(false);
       await fetchState();
-    } catch {
-      /* ignore */
+    } catch (e: unknown) {
+      const msg = (e as { response?: { data?: { message?: unknown } } })?.response?.data?.message;
+      setError(typeof msg === 'string' ? msg : 'Antwort konnte nicht gesendet werden.');
     } finally {
       setAnswering(false);
     }

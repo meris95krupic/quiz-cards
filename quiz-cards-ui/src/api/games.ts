@@ -30,8 +30,8 @@ export const gamesApi = {
     return data;
   },
 
-  answer: async (gameId: string, result: TurnResult, selectedOption?: number): Promise<void> => {
-    await apiClient.post(`/games/${gameId}/answer`, { result, selectedOption });
+  answer: async (gameId: string, result: TurnResult, chosenIndex?: number): Promise<void> => {
+    await apiClient.post(`/games/${gameId}/answer`, { result, ...(chosenIndex !== undefined && { chosenIndex }) });
   },
 
   getResults: async (gameId: string): Promise<GameResults> => {
