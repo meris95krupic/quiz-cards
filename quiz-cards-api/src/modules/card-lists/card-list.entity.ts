@@ -12,6 +12,9 @@ export class CardList {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column({ name: 'user_id', type: 'uuid', nullable: true })
+  userId: string | null;
+
   @Column({ length: 255 })
   title: string;
 

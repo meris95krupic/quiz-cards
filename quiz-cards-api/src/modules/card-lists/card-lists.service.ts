@@ -17,8 +17,9 @@ export class CardListsService {
     private readonly dataSource: DataSource,
   ) {}
 
-  findAll(): Promise<CardList[]> {
+  findAll(userId: string): Promise<CardList[]> {
     return this.cardListRepo.find({
+      where: { userId },
       relations: ['cards'],
       order: { createdAt: 'DESC', cards: { position: 'ASC' } } as never,
     });
@@ -34,9 +35,10 @@ export class CardListsService {
     return list;
   }
 
-  async import(dto: ImportCardListDto): Promise<CardList> {
+  async import(dto: ImportCardListDto, userId: string): Promise<CardList> {
     return this.dataSource.transaction(async (manager) => {
       const list = manager.create(CardList, {
+        userId,
         title: dto.title,
         description: dto.description ?? null,
         bgColor: dto.bgColor ?? null,

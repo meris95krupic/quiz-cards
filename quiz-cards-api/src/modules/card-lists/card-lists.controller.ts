@@ -8,20 +8,26 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { User } from '../users/user.entity';
 import { CardListsService } from './card-lists.service';
 import { ImportCardListDto } from './dto/import-card-list.dto';
 
 @ApiTags('card-lists')
 @Controller('card-lists')
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 export class CardListsController {
   constructor(private readonly cardListsService: CardListsService) {}
 
   @Get()
-  @ApiOperation({ summary: 'List all card lists' })
-  findAll() {
-    return this.cardListsService.findAll();
+  @ApiOperation({ summary: 'List my card lists' })
+  findAll(@CurrentUser() user: User) {
+    return this.cardListsService.findAll(user.id);
   }
 
   @Get(':id')
@@ -32,8 +38,8 @@ export class CardListsController {
 
   @Post('import')
   @ApiOperation({ summary: 'Import a card list from JSON' })
-  import(@Body() dto: ImportCardListDto) {
-    return this.cardListsService.import(dto);
+  import(@Body() dto: ImportCardListDto, @CurrentUser() user: User) {
+    return this.cardListsService.import(dto, user.id);
   }
 
   @Delete(':id')

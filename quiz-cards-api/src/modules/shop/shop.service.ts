@@ -24,7 +24,8 @@ export class ShopService {
     private readonly dataSource: DataSource,
     private readonly config: ConfigService,
   ) {
-    this.adminEmail = this.config.get<string>('adminEmail') ?? 'meris-k@hotmail.com';
+    this.adminEmail =
+      this.config.get<string>('adminEmail') ?? 'meris-k@hotmail.com';
   }
 
   isAdmin(user: User): boolean {
@@ -38,7 +39,8 @@ export class ShopService {
     const existing = await this.submissionRepo.findOne({
       where: { cardListId, status: 'pending' },
     });
-    if (existing) throw new ConflictException('Diese Liste wurde bereits eingereicht');
+    if (existing)
+      throw new ConflictException('Diese Liste wurde bereits eingereicht');
 
     const isAdmin = this.isAdmin(user);
     const submission = this.submissionRepo.create({
@@ -87,7 +89,8 @@ export class ShopService {
   async remove(id: string, user: User): Promise<void> {
     const sub = await this.submissionRepo.findOne({ where: { id } });
     if (!sub) throw new NotFoundException();
-    if (!this.isAdmin(user) && sub.submittedBy !== user.id) throw new ForbiddenException();
+    if (!this.isAdmin(user) && sub.submittedBy !== user.id)
+      throw new ForbiddenException();
     await this.submissionRepo.delete(id);
   }
 
@@ -96,12 +99,16 @@ export class ShopService {
       where: { id: submissionId, status: 'approved' },
       relations: ['cardList', 'cardList.cards'],
     });
-    if (!sub) throw new NotFoundException('Shop-Eintrag nicht gefunden oder nicht genehmigt');
+    if (!sub)
+      throw new NotFoundException(
+        'Shop-Eintrag nicht gefunden oder nicht genehmigt',
+      );
 
     const original = sub.cardList;
 
     return this.dataSource.transaction(async (manager) => {
       const copy = manager.create(CardList, {
+        userId: user.id,
         title: original.title,
         description: original.description,
         bgColor: original.bgColor,
