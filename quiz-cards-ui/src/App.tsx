@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { Game } from './pages/Game/Game';
 import { Home } from './pages/Home/Home';
@@ -7,8 +8,17 @@ import { Register } from './pages/Register/Register';
 import { Results } from './pages/Results/Results';
 import { Room } from './pages/Room/Room';
 import { Shop } from './pages/Shop/Shop';
+import { useAuthStore } from './stores/authStore';
 
 function App() {
+  const { isAuthenticated, user, loadUser } = useAuthStore();
+
+  useEffect(() => {
+    if (isAuthenticated && !user) {
+      void loadUser();
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <HashRouter>
       <Routes>

@@ -151,13 +151,26 @@ export const Lobby = () => {
 
       // Pre-add all selected players and store their session tokens
       const sessions: { playerId: string; sessionToken: string }[] = [];
-      for (const p of selectedPlayers) {
+
+      // Authenticated user first (with userId for progress tracking)
+      if (isAuthenticated && user && authIncluded) {
+        const player = await gamesApi.addPlayer(game.id, {
+          name: user.name,
+          avatarId: user.avatarId,
+          userId: user.id,
+        });
+        const token = player.sessionToken ?? player.id;
+        sessions.push({ playerId: player.id, sessionToken: token });
+      }
+
+      // Quick players (no userId)
+      for (const p of quickPlayers) {
         const player = await gamesApi.addPlayer(game.id, { name: p.name, avatarId: p.avatarId });
         const token = player.sessionToken ?? player.id;
         sessions.push({ playerId: player.id, sessionToken: token });
       }
-      sessionStorage.setItem(`room_sessions_${game.id}`, JSON.stringify(sessions));
 
+      sessionStorage.setItem(`room_sessions_${game.id}`, JSON.stringify(sessions));
       navigate(`/room/${game.id}`);
     } catch {
       setImportError('Online-Spiel konnte nicht erstellt werden.');

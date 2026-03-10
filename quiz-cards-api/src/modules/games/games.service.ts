@@ -280,14 +280,23 @@ export class GamesService {
     newCardLevel: number;
   }> {
     return this.dataSource.transaction(async (manager) => {
+      // Lock only the Game row (FOR UPDATE on JOIN can fail in PostgreSQL)
       const game = await manager.findOne(Game, {
         where: { id: gameId },
-        relations: ['players'],
         lock: { mode: 'pessimistic_write' },
       });
       if (!game) throw new NotFoundException(`Game ${gameId} not found`);
       if (game.status !== GameStatus.IN_PROGRESS) {
         throw new BadRequestException('Game is not in progress');
+      }
+
+      // Fetch players separately (not part of the lock query)
+      const players = await manager.find(GamePlayer, {
+        where: { gameId },
+        order: { turnOrder: 'ASC' },
+      });
+      if (players.length === 0) {
+        throw new BadRequestException('No players found for this game');
       }
 
       const { orderedCards, totalPlayable } = await this.getOrderedCards(game);
@@ -296,9 +305,6 @@ export class GamesService {
         throw new BadRequestException(
           'Karte nicht gefunden – Spiel möglicherweise bereits beendet',
         );
-      const players = [...game.players].sort(
-        (a, b) => a.turnOrder - b.turnOrder,
-      );
       const currentPlayer = players[game.currentCardIndex % players.length];
 
       // For multiple_choice: auto-validate if chosenIndex provided
