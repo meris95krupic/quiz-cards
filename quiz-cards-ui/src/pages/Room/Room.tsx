@@ -289,6 +289,8 @@ export const Room = () => {
         </div>
       </header>
 
+      {error && <p className={styles.error}>{error}</p>}
+
       <div className={styles.gameContent}>
         {isMyTurn && card ? (
           <>
