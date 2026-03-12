@@ -27,9 +27,15 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getResponse()
         : 'Internal server error';
 
-    if (status >= 500) {
+    // Log 4xx + 5xx with request body for debugging
+    if (status >= 400) {
+      const body = request.body as Record<string, unknown> | undefined;
+      const detail =
+        body && Object.keys(body).length > 0
+          ? ` body=${JSON.stringify(body)}`
+          : '';
       this.logger.error(
-        `${request.method} ${request.url} → ${status}`,
+        `${request.method} ${request.url} → ${status}${detail}`,
         exception instanceof Error ? exception.stack : String(exception),
       );
     }
